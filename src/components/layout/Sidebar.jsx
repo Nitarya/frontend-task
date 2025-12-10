@@ -1,6 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { 
   LayoutGrid, 
   Send, 
@@ -24,6 +26,18 @@ const iconMap = {
 };
 
 export default function Sidebar({ isOpen, onClose }) {
+  const pathname = usePathname();
+  
+  const getItemPath = (id) => {
+    if (id === "dashboard") return "/";
+    return `/${id}`;
+  };
+
+  const isActive = (id) => {
+    const path = getItemPath(id);
+    return pathname === path;
+  };
+
   return (
     <>
       {isOpen && (
@@ -62,22 +76,25 @@ export default function Sidebar({ isOpen, onClose }) {
           <ul className="space-y-1">
             {NAVIGATION_ITEMS.map((item) => {
               const Icon = iconMap[item.icon];
+              const active = isActive(item.id);
               return (
                 <li key={item.id}>
-                  <button
+                  <Link
+                    href={getItemPath(item.id)}
+                    onClick={onClose}
                     className={`
                       w-full flex items-center gap-3
                       px-4 py-3.5 rounded-xl
                       transition-all duration-200
-                      ${item.active 
+                      ${active 
                         ? 'bg-white text-blue-600 font-semibold shadow-lg' 
                         : 'text-white/90 hover:text-white hover:bg-white/10'
                       }
                     `}
                   >
-                    <Icon size={22} strokeWidth={item.active ? 2.5 : 2} />
+                    <Icon size={22} strokeWidth={active ? 2.5 : 2} />
                     <span className="text-base">{item.label}</span>
-                  </button>
+                  </Link>
                 </li>
               );
             })}
