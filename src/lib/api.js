@@ -1,7 +1,8 @@
 // API configuration and helper functions
 import axios from 'axios';
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
+// Use Next.js API routes (internal API)
+const API_BASE_URL = '/api';
 
 // Create axios instance with default config
 const apiClient = axios.create({
@@ -12,13 +13,14 @@ const apiClient = axios.create({
 });
 
 /**
- * Fetches all campaigns from the backend
+ * Fetches all campaigns from the Next.js API
  * @returns {Promise<Array>} Array of campaign objects
  */
 export async function getCampaigns() {
   try {
     const response = await apiClient.get('/campaigns');
-    return response.data;
+    // Extract data from API response format: { success: true, data: [...] }
+    return response.data.data || response.data;
   } catch (error) {
     console.error('Error fetching campaigns:', error);
     throw error;
@@ -33,7 +35,8 @@ export async function getCampaigns() {
 export async function createCampaign(campaignData) {
   try {
     const response = await apiClient.post('/campaigns', campaignData);
-    return response.data;
+    // Extract data from API response format: { success: true, data: {...} }
+    return response.data.data || response.data;
   } catch (error) {
     console.error('Error creating campaign:', error);
     throw error;
