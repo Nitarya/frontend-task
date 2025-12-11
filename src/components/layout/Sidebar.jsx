@@ -29,8 +29,7 @@ export default function Sidebar({ isOpen, onClose }) {
   const pathname = usePathname();
   
   const getItemPath = (id) => {
-    if (id === "dashboard") return "/";
-    return `/${id}`;
+    return `/dashboard${id === "dashboard" ? "" : `/${id}`}`;
   };
 
   const isActive = (id) => {
