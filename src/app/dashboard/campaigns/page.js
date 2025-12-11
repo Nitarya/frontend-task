@@ -1,13 +1,13 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import DashboardLayout from "@/components/layout/DashboardLayout";
 import CampaignForm from "@/components/campaigns/CampaignForm";
 import CampaignsList from "@/components/campaigns/CampaignsList";
 import { getCampaigns, createCampaign } from "@/lib/api";
 
-export default function CampaignsPage() {
+function CampaignsContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const [campaigns, setCampaigns] = useState([]);
@@ -97,6 +97,23 @@ export default function CampaignsPage() {
         <CampaignsList campaigns={campaigns} loading={loading} onRefresh={fetchCampaigns} />
       </div>
     </DashboardLayout>
+  );
+}
+
+export default function CampaignsPage() {
+  return (
+    <Suspense fallback={
+      <DashboardLayout>
+        <div className="max-w-7xl mx-auto space-y-6">
+          <div className="animate-pulse">
+            <div className="h-8 bg-gray-200 rounded w-48 mb-2"></div>
+            <div className="h-4 bg-gray-200 rounded w-64"></div>
+          </div>
+        </div>
+      </DashboardLayout>
+    }>
+      <CampaignsContent />
+    </Suspense>
   );
 }
 
